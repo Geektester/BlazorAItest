@@ -1,0 +1,43 @@
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Components.Forms
+@using test1.Models
+
+<EditForm Model="EventModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-2">
+        <label>Title:</label>
+        <InputText @bind-Value="EventModel.Title" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Date:</label>
+        <InputDate @bind-Value="EventModel.Date" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label>Description:</label>
+        <InputTextArea @bind-Value="EventModel.Description" class="form-control" />
+    </div>
+
+    <div class="form-check">
+        <InputCheckbox @bind-Value="EventModel.IsOnline" class="form-check-input" />
+        <label class="form-check-label">Is Online</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventModel EventModel { get; set; } = new EventModel();
+
+    [Parameter]
+    public EventCallback<EventModel> EventModelChanged { get; set; }
+
+    private async Task HandleValidSubmit()
+    {
+        await EventModelChanged.InvokeAsync(EventModel);
+    }
+}

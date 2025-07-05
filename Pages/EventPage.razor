@@ -1,0 +1,25 @@
+@page "/event"
+@using test1.Models
+@using test1.Components
+
+<h3>Edit Event</h3>
+
+<EventCard @bind-EventModel="MyEvent" />
+
+<p>
+    <strong>Summary:</strong><br />
+    Title: @MyEvent.Title <br />
+    Date: @MyEvent.Date.ToShortDateString() <br />
+    Description: @MyEvent.Description <br />
+    Online: @(MyEvent.IsOnline ? "Yes" : "No")
+</p>
+
+@code {
+    private EventModel MyEvent = new EventModel
+    {
+        Title = "Blazor Workshop",
+        Date = DateTime.Today.AddDays(7),
+        Description = "Learn Blazor with hands-on examples.",
+        IsOnline = true
+    };
+}

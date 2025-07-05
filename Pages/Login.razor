@@ -1,0 +1,58 @@
+@page "/login"
+@using System.ComponentModel.DataAnnotations
+@using test1.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+@inject SessionState Session
+
+<h3>Login</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red">@errorMessage</p>
+}
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="loginModel.Username" />
+    </div>
+
+    <div>
+        <label>Password:</label>
+        <InputText @bind-Value="loginModel.Password" type="password" />
+    </div>
+
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    private LoginModel loginModel = new();
+    private string errorMessage;
+
+    private async Task HandleLogin()
+    {
+        var result = await AuthService.Login(loginModel.Username, loginModel.Password);
+
+        if (result)
+        {
+            Navigation.NavigateTo("/attendance");
+        }
+        else
+        {
+            errorMessage = "Invalid credentials. Try again.";
+        }
+    }
+
+    public class LoginModel
+    {
+        [Required]
+        public string Username { get; set; }
+
+        [Required]
+        public string Password { get; set; }
+    }
+}

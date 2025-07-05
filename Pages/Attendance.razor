@@ -1,0 +1,45 @@
+@page "/attendance"
+@using test1.Models
+@using test1.Components
+@inject test1.Services.AttendanceService AttendanceService
+@inject SessionState Session
+@@inject test1.Services.AttendanceService AttendanceService
+
+<h3>Attendance Tracker</h3>
+
+<input @bind="Username" placeholder="Enter your name" />
+<button @onclick="MarkAttendance">Mark Attendance</button>
+
+@if (Records?.Any() == true)
+{
+    <ul>
+        @foreach (var record in Records)
+        {
+            <li>@record.Username marked present at @record.Timestamp.ToString("g")</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No attendance records yet.</p>
+}
+
+@code {
+    private string Username;
+private List<AttendanceRecord> Records;
+
+    protected override void OnInitialized()
+    {
+        Records = AttendanceService.GetAll();
+    }
+
+    private void MarkAttendance()
+    {
+        if (!string.IsNullOrWhiteSpace(Username))
+        {
+            AttendanceService.Mark(Username);
+            Records = AttendanceService.GetAll(); // Refresh
+            Username = string.Empty;
+        }
+    }
+}
